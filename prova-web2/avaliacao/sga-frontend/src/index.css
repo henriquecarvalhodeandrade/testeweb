@@ -1,0 +1,26 @@
+/* Estilo Global Básico */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f7f6; /* Fundo limpo e suave */
+  margin: 0;
+  padding: 0;
+}
+
+/* 7. Layout com Responsividade - Exemplo de Media Query */
+/* Aplicável a telas pequenas (smartphones) */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.5em;
+  }
+  
+  .navbar {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .nav-links a {
+    margin: 5px 0;
+    padding: 5px 10px;
+    font-size: 0.9em;
+  }
+}
