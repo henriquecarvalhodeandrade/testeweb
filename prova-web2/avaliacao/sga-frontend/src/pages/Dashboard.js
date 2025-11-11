@@ -26,7 +26,8 @@ const Dashboard = () => {
     const options = [
         { title: 'Gerenciar Alunos', description: 'Cadastrar, listar e editar informações de alunos.', link: '/alunos' },
         { title: 'Gerenciar Cursos', description: 'Cadastrar, listar e excluir cursos.', link: '/cursos' },
-        { title: 'Gerenciar Professores (Em Breve)', description: 'Funcionalidade de gestão de professores ainda não implementada.', link: '#', disabled: true }
+        // ALTERADO: Habilitar o link para Professores e definir a rota
+        { title: 'Gerenciar Professores', description: 'Cadastrar, listar e editar informações de professores.', link: '/professores', disabled: false }
     ];
 
     return (
@@ -41,6 +42,7 @@ const Dashboard = () => {
                         to={option.link}
                         style={{ 
                             ...cardStyle,
+                            // A opacidade agora será 1 para Professores, pois disabled é false
                             opacity: option.disabled ? 0.6 : 1,
                             cursor: option.disabled ? 'not-allowed' : 'pointer'
                         }}

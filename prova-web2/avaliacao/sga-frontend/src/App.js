@@ -11,7 +11,12 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register'; 
 import Alunos from './pages/Alunos';
-import Dashboard from './pages/Dashboard'; // 1. IMPORTAÇÃO DO NOVO COMPONENTE
+// sga-frontend/src/App.js
+
+
+import Cursos from './pages/Cursos'; // IMPORTAÇÃO DE CURSOS
+import Professores from './pages/Professores'; // 1. IMPORTAÇÃO DO NOVO COMPONENTE
+import Dashboard from './pages/Dashboard'; 
 import { AuthProvider, useAuth } from './AuthContext'; 
 
 
@@ -40,7 +45,7 @@ const AppRoutes = () => {
                     <Route path="/register" element={<Register />} /> 
                     
                     {/* Rotas Protegidas */}
-                    <Route // 2. NOVA ROTA PROTEGIDA PARA O DASHBOARD
+                    <Route 
                         path="/dashboard" 
                         element={
                             <PrivateRoute>
@@ -56,7 +61,25 @@ const AppRoutes = () => {
                             </PrivateRoute>
                         } 
                     />
-                    {/* Você deve adicionar uma rota protegida para Cursos aqui também */}
+                    <Route // Rota protegida para Cursos
+                        path="/cursos" 
+                        element={
+                            <PrivateRoute>
+                                <Cursos />
+                            </PrivateRoute>
+                        } 
+                    />
+
+                    
+
+                    <Route // NOVA ROTA PROTEGIDA PARA PROFESSORES
+                        path="/professores" 
+                        element={
+                            <PrivateRoute>
+                                <Professores />
+                            </PrivateRoute>
+                        } 
+                    />
                     <Route path="*" element={<Navigate to="/" />} />
                 </Routes>
             </div>

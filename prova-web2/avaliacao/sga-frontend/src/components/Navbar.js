@@ -16,12 +16,9 @@ const Navbar = () => {
                 <ul className="navbar-nav">
                     {isLoggedIn ? (
                         <>
-                            <li>
-                                {/* ALTERADO: Link principal para logados agora aponta para o Dashboard */}
-                                <Link to="/dashboard" className="nav-link">Painel</Link>
-                            </li>
-                            {/* Você pode querer manter um link para Alunos se ele for uma seção importante,
-                                mas para manter o Painel como ponto de entrada, só colocamos o Painel. */}
+                            {/* O link "Painel" foi removido pois o logo já direciona para /dashboard,
+                            e os sub-links para Alunos/Cursos/Professores não são necessários
+                            conforme sua solicitação de usar cards no Dashboard. */}
                             <li className="welcome-text">
                                 Olá, {nome || 'Usuário'}!
                             </li>

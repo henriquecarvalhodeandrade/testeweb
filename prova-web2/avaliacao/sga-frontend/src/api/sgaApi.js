@@ -100,6 +100,36 @@ export const updateCurso = (id, cursoData) => {
 export const deleteCurso = (id) => {
     return apiCall('delete', `/cursos/${id}`);
 };
+// sga-frontend/src/api/sgaApi.js (Adições)
+
+// ... (código existente até o final do bloco 4. Funções CRUD para Cursos)
+
+// =================================================================
+// 5. Funções CRUD para Professores (Rotas: /api/professores)
+// (Assumindo que o backend já está implementado)
+// =================================================================
+
+export const fetchProfessores = () => { 
+    return apiCall('get', '/professores'); // Retorna response.data (Array de professores)
+};
+
+export const fetchProfessorById = (id) => { 
+    return apiCall('get', `/professores/${id}`); // Retorna response.data (Objeto professor)
+};
+
+export const createProfessor = (professorData) => {
+    return apiCall('post', '/professores', professorData); // Retorna response.data
+};
+
+export const updateProfessor = (id, professorData) => { 
+    // Assumindo que a atualização da entidade principal é feita assim
+    return apiCall('put', `/professores/${id}`, professorData); 
+};
+
+export const deleteProfessor = (id) => {
+    // Retorna 204 No Content, mas o helper retorna response.data (vazio/mensagem de sucesso)
+    return apiCall('delete', `/professores/${id}`); 
+};
 
 
 // Exporta a instância do axios configurada para uso direto, se necessário
