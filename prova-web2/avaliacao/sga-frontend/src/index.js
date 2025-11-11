@@ -1,3 +1,5 @@
+// sga-frontend/src/index.js (Sem alterações se você já usa o BrowserRouter e o Provider)
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';

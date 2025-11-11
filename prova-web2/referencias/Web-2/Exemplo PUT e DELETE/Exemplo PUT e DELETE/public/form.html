@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Formulário</title>
+</head>
+<body>
+  <h1>Teste de Formulários</h1>
+
+  <h2>GET</h2>
+  <form action="/tarefas" method="GET">
+    <button type="submit">Enviar GET</button>
+  </form>
+
+  <h2>Formulário POST</h2>
+  <form action="/tarefas" method="POST">
+    Tarefa: <input type="text" name="nome"><br>
+    <select name="feita">
+        <option value=1> Feita</option>
+        <option value=0>A fazer</option>
+    </select>
+    <button type="submit">Enviar POST</button>
+  </form>
+
+    <h2>Formulário PUT</h2>
+        <form action="/tarefas/?_method=PUT" method="POST">
+            ID: <input type="text" name="id"><br>
+        Tarefa: <input type="text" name="nome"><br>
+    <select name="feita">
+        <option value=1> Feita</option>
+        <option value=0>A fazer</option>
+    </select>
+        <button type="submit">Enviar PUT</button>
+    </form>
+
+    <h2>Formulário DELETE</h2>
+        <form action="/tarefas/?_method=DELETE" method="POST">
+        ID: <input type="text" name="id"><br>
+        <button type="submit">Deletar</button>
+    </form>
+</body>
+</html>

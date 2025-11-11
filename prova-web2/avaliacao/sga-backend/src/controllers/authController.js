@@ -6,7 +6,7 @@ const userModel = require('../models/userModel');
 const register = async (req, res) => {
     const { nome, email, senha } = req.body;
     try {
-        // 5. Criptografar Senha [cite: 1404, 1536]
+        // 5. Criptografar Senha
         const hashedPassword = await bcrypt.hash(senha, 10);
         
         const newUser = await userModel.create(nome, email, hashedPassword);
@@ -34,14 +34,14 @@ const login = async (req, res) => {
             return res.status(401).json({ erro: 'Credenciais inválidas.' });
         }
 
-        // 5. Compara a senha digitada com o hash salvo [cite: 1538, 1590]
+        // 5. Compara a senha digitada com o hash salvo
         const passwordMatch = await bcrypt.compare(senha, user.senha);
 
         if (!passwordMatch) {
             return res.status(401).json({ erro: 'Credenciais inválidas.' });
         }
 
-        // 5. Criação de Sessão (login de sucesso) [cite: 1318, 1592]
+        // 5. Criação de Sessão (login de sucesso)
         req.session.userId = user.id;
         req.session.nome = user.nome; // Adiciona nome para exibição no frontend
 
@@ -55,7 +55,7 @@ const login = async (req, res) => {
 
 // 3. Logout de Usuário (5. Destruição de Sessão)
 const logout = (req, res) => {
-    // 5. Destrói a sessão [cite: 1381, 1387, 1624]
+    // 5. Destrói a sessão
     req.session.destroy(err => {
         if (err) {
             console.error('Erro ao destruir sessão:', err);

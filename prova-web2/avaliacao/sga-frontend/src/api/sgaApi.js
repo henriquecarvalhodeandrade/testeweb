@@ -1,112 +1,100 @@
 // sga-frontend/src/api/sgaApi.js
+
 import axios from 'axios';
 
-// 1. Configuração da instância Axios
-const api = axios.create({
-    baseURL: 'http://localhost:3001/api', // URL base do nosso backend
-    withCredentials: true, // ESSENCIAL para enviar os cookies de sessão com cada requisição
-    headers: {
-        'Content-Type': 'application/json',
-    }
+// 1. Configura a instância do Axios para a base URL do backend
+const sgaApi = axios.create({
+    baseURL: 'http://localhost:3001/api', 
+    withCredentials: true, 
 });
 
-// 2. Funções de Consulta (Read - Alunos)
-export const fetchAlunos = async () => {
+// FUNÇÃO HELPER: Para extrair o .data automaticamente e padronizar o tratamento de erro.
+const apiCall = async (method, url, data = null) => {
     try {
-        const response = await api.get('/alunos'); // GET /api/alunos
-        return response.data; // Array de alunos (incluindo nome do curso via JOIN)
+        const response = await sgaApi.request({ method, url, data });
+        return response.data; // Retorna APENAS o payload de dados
     } catch (error) {
+        // Lança o erro para ser capturado no componente (App.js, Login.js, Alunos.js, etc.)
         throw error;
     }
+}
+
+// =================================================================
+// 2. Funções de Autenticação (Rotas: /api/auth)
+// =================================================================
+
+export const register = (nome, email, senha) => {
+    return apiCall('post', '/auth/register', { nome, email, senha });
 };
 
-// 3. Função de Exclusão (Delete - Alunos)
-export const deleteAluno = async (id) => {
-    try {
-        const response = await api.delete(`/alunos/${id}`); // DELETE /api/alunos/:id
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+export const login = (email, senha) => {
+    return apiCall('post', '/auth/login', { email, senha });
 };
 
-// 4. Funções de Autenticação (Login/Logout)
-export const login = async (email, senha) => {
-    const response = await api.post('/auth/login', { email, senha }); // POST /api/auth/login
-    return response.data;
+export const logout = () => {
+    // Não precisa de .data, pois 204 No Content é comum, mas mantemos o padrão
+    return apiCall('post', '/auth/logout');
 };
 
-export const logout = async () => {
-    const response = await api.post('/auth/logout'); // POST /api/auth/logout
-    return response.data;
+// Mapeado do getLoggedInUser (Backend) para o nome esperado pelo Frontend (checkAuthStatus)
+export const checkAuthStatus = () => { 
+    return apiCall('get', '/auth/me'); // Retorna response.data
 };
 
-export const checkAuthStatus = async () => {
-    try {
-        // GET /api/auth/me (protegida pelo middleware de autenticação no backend)
-        const response = await api.get('/auth/me'); // 3. Consulta: Dados do usuário logado [cite: 547]
-        return response.data;
-    } catch (error) {
-        return { isLoggedIn: false };
-    }
+// =================================================================
+// 3. Funções CRUD para Alunos (Rotas: /api/alunos)
+// =================================================================
+
+// Mapeado de getAllAlunos para o nome esperado pelo Frontend (fetchAlunos)
+export const fetchAlunos = () => { 
+    return apiCall('get', '/alunos'); // Retorna response.data (Array de alunos)
 };
 
-// Exportar a instância configurada para uso em outras requisições
-export default api;
-
-// sga-frontend/src/api/sgaApi.js (Adições)
-// ... (código existente)
-
-// Consulta (Read - Cursos) - Necessário para o relacionamento no formulário de aluno
-export const fetchCursos = async () => {
-    try {
-        const response = await api.get('/cursos'); // GET /api/cursos
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+// Função para buscar um único aluno por ID
+export const fetchAlunoById = (id) => { 
+    return apiCall('get', `/alunos/${id}`); // Retorna response.data (Objeto aluno)
 };
 
-// Consulta (Read - Aluno Específico)
-export const fetchAlunoById = async (id) => {
-    try {
-        const response = await api.get(`/alunos/${id}`); 
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+export const createAluno = (alunoData) => {
+    return apiCall('post', '/alunos', alunoData); // Retorna response.data
 };
 
-// Cadastro (Create - Alunos)
-export const createAluno = async (alunoData) => {
-    try {
-        const response = await api.post('/alunos', alunoData); // POST /api/alunos
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+// Nome da função que o AlunoForm.js espera
+export const updateAluno = (id, alunoData) => { 
+    return apiCall('put', `/alunos/${id}`, alunoData); // Retorna response.data (Objeto/Mensagem de sucesso)
 };
 
-// Edição (Update - Alunos) - Para dados básicos
-export const updateAluno = async (id, alunoData) => {
-    try {
-        // PUT /api/alunos/:id (dados básicos)
-        const response = await api.put(`/alunos/${id}`, alunoData); 
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+// Mantemos o updateAlunoCourse por compatibilidade
+export const updateAlunoCourse = (id, alunoData) => { 
+    return apiCall('put', `/alunos/${id}/curso`, { novo_curso_id: alunoData.curso_id }); 
 };
 
-// Edição (Update - Alunos) - Para relacionamento (Chave Estrangeira)
-export const updateAlunoCourse = async (alunoId, novo_curso_id) => {
-    try {
-        // PUT /api/alunos/:id/curso (Chave Estrangeira)
-        const response = await api.put(`/alunos/${alunoId}/curso`, { novo_curso_id });
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+export const deleteAluno = (id) => {
+    // Retorna 204 No Content, mas o helper retorna response.data (vazio/mensagem de sucesso)
+    return apiCall('delete', `/alunos/${id}`); 
 };
 
-// ... (Restante das exportações)
+
+// =================================================================
+// 4. Funções CRUD para Cursos (Rotas: /api/cursos)
+// =================================================================
+
+// Mapeado de getAllCursos para o nome esperado pelo Frontend (fetchCursos)
+export const fetchCursos = () => { 
+    return apiCall('get', '/cursos'); // Retorna response.data (Array de cursos)
+};
+
+export const createCurso = (cursoData) => {
+    return apiCall('post', '/cursos', cursoData);
+};
+
+export const updateCurso = (id, cursoData) => {
+    return apiCall('put', `/cursos/${id}`, cursoData);
+};
+
+export const deleteCurso = (id) => {
+    return apiCall('delete', `/cursos/${id}`);
+};
+
+// Exporta a instância do axios configurada para uso direto, se necessário
+export default sgaApi;
