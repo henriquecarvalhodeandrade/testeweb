@@ -13,10 +13,10 @@ const cursoRoutes = require('./src/routes/cursoRoutes');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middlewares
+// sga-backend/server.js
 app.use(cors({
-    origin: 'http://localhost:3000', // Permite apenas o frontend React
-    credentials: true // Permite o envio de cookies de sessão
+    origin: 'http://localhost:3000', // OK
+    credentials: true // OK
 }));
 app.use(express.json()); // Interpreta corpo da requisição JSON [cite: 93, 548]
 app.use(express.urlencoded({ extended: true })); // Interpreta dados de formulário [cite: 97]

@@ -15,14 +15,14 @@ export const AuthProvider = ({ children }) => {
     // Função que verifica o status de autenticação (usada na inicialização)
     const verifyAuthStatus = async () => {
         try {
-            const response = await checkAuthStatus(); // GET /api/auth/me
-            if (response.data.isLoggedIn) {
+            const response = await checkAuthStatus(); // 'response' é agora { isLoggedIn, userId, nome }
+            if (response.isLoggedIn) { // ✅ CORRIGIDO (removida a propriedade '.data')
                 setIsLoggedIn(true);
                 setUser({ 
-                    userId: response.data.userId, 
-                    nome: response.data.nome 
+                    userId: response.userId, 
+                    nome: response.nome 
                 });
-            } else {
+        } else {
                 // Caso a API retorne 200, mas diga que não está logado
                 setIsLoggedIn(false);
                 setUser(null);
@@ -45,14 +45,15 @@ export const AuthProvider = ({ children }) => {
         verifyAuthStatus();
     }, []);
 
+    // sga-frontend/src/AuthContext.js - Função login
     const login = async (email, senha) => {
         setLoading(true);
         try {
-            const response = await apiLogin(email, senha); // POST /api/auth/login
+            const response = await apiLogin(email, senha); // 'response' é agora { message, nome, userId }
             setIsLoggedIn(true);
             setUser({ 
-                userId: response.data.userId, 
-                nome: response.data.nome 
+                userId: response.userId, // ✅ CORRIGIDO
+                nome: response.nome      // ✅ CORRIGIDO
             });
             return { success: true };
         } catch (error) {
@@ -81,15 +82,16 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // sga-frontend/src/AuthContext.js - Função register
     const register = async (nome, email, senha) => {
         setLoading(true);
         try {
-            const response = await apiRegister(nome, email, senha); // POST /api/auth/register
+            const response = await apiRegister(nome, email, senha); // 'response' é agora { id, nome, message }
             // Assumimos que o registro faz o login automaticamente (como no seu authController)
             setIsLoggedIn(true);
             setUser({ 
-                userId: response.data.id, 
-                nome: response.data.nome 
+                userId: response.id,   // ✅ CORRIGIDO (usando 'response.id')
+                nome: response.nome    // ✅ CORRIGIDO
             });
             return { success: true };
         } catch (error) {

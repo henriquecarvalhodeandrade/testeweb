@@ -1,59 +1,72 @@
-// sga-frontend/src/pages/Login.js
+// sga-frontend/src/pages/Login.js (Assumindo a estrutura padrão com useNavigate)
+
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext'; 
-import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
-    const [error, setError] = useState('');
-    const { login, isLoggedIn } = useAuth();
-    const navigate = useNavigate();
+    const [error, setError] = useState(null);
 
-    // CORREÇÃO AQUI: Redireciona para /alunos se já estiver logado
-    if (isLoggedIn) {
-        navigate('/alunos'); // Redireciona para a página principal após autenticação
-        return null;
-    }
+    // useAuth fornece a função de login
+    const { login: authLogin } = useAuth();
+    // useNavigate é usado para redirecionar o usuário
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError('');
+        setError(null);
 
-        const result = await login(email, senha);
+        try {
+            // Chama a função de login do contexto
+            await authLogin(email, senha);
+            
+            // REDIRECIONAMENTO ALTERADO: Vai para o Dashboard
+            navigate('/dashboard'); 
 
-        if (result.success) {
-            navigate('/alunos'); // Redireciona para a rota protegida após o sucesso
-        } else {
-            console.error(result.error);
-            setError(result.error || 'Falha no login. Verifique suas credenciais.');
+        } catch (err) {
+            // Tenta obter a mensagem de erro do objeto de resposta do Axios
+            const errorMessage = err.response?.data?.erro || 'Erro ao tentar logar. Verifique suas credenciais.';
+            setError(errorMessage);
+            console.error('Login error:', err);
         }
     };
 
     return (
-        <div className="login-container">
-            <h2>Login</h2>
-            <form onSubmit={handleSubmit}>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                <div>
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+        <div className="form-container">
+            <form onSubmit={handleSubmit} className="card-form">
+                <h2>Login no SGA</h2>
+                
+                {error && <p className="error-message">{error}</p>}
+                
+                <div className="form-group">
+                    <label htmlFor="email">Email</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        value={email} 
+                        onChange={(e) => setEmail(e.target.value)} 
                         required
                     />
                 </div>
-                <div>
-                    <label>Senha:</label>
-                    <input
-                        type="password"
-                        value={senha}
-                        onChange={(e) => setSenha(e.target.value)}
-                        required
+                
+                <div className="form-group">
+                    <label htmlFor="senha">Senha</label>
+                    <input 
+                        type="password" 
+                        id="senha" 
+                        value={senha} 
+                        onChange={(e) => setSenha(e.target.value)} 
+                        required 
                     />
                 </div>
-                <button type="submit">Entrar</button>
+                
+                <button type="submit" className="btn-primary">Entrar</button>
+                
+                <p className="link-text">
+                    Não tem uma conta? <Link to="/register">Cadastre-se</Link>
+                </p>
             </form>
         </div>
     );

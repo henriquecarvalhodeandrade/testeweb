@@ -14,8 +14,13 @@ const apiCall = async (method, url, data = null) => {
         const response = await sgaApi.request({ method, url, data });
         return response.data; // Retorna APENAS o payload de dados
     } catch (error) {
-        // Lança o erro para ser capturado no componente (App.js, Login.js, Alunos.js, etc.)
-        throw error;
+        // CORREÇÃO: Padroniza o erro para garantir que ele seja sempre lançado e contenha uma mensagem útil.
+        const errorMessage = error.response 
+            ? error.response.data.erro || 'Erro do servidor.' // Pega a mensagem de erro do backend (ex: 'Credenciais inválidas.')
+            : 'Erro de conexão de rede.'; // Para falhas de rede (onde error.response é undefined)
+
+        // Lança o erro com a mensagem extraída para ser pego pelo catch em AuthContext.js/Login.js
+        throw new Error(errorMessage); 
     }
 }
 
@@ -95,6 +100,7 @@ export const updateCurso = (id, cursoData) => {
 export const deleteCurso = (id) => {
     return apiCall('delete', `/cursos/${id}`);
 };
+
 
 // Exporta a instância do axios configurada para uso direto, se necessário
 export default sgaApi;
