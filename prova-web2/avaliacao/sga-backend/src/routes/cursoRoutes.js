@@ -1,19 +1,26 @@
 // sga-backend/src/routes/cursoRoutes.js
 const express = require('express');
-const router = express.Router();
 const cursoController = require('../controllers/cursoController');
-const isAuthenticated = require('../middlewares/authMiddleWare');
+const requireAuth = require('../middlewares/authMiddleWare'); // CORREÇÃO: Importa diretamente o valor exportado.
 
-// Rotas RESTful CRUD para Cursos (Protegidas)
+const router = express.Router();
 
-// 1. Cadastro: Criar novo curso (POST /api/cursos)
-router.post('/', isAuthenticated, cursoController.create);
+// Todas as rotas de curso requerem autenticação
+router.use(requireAuth); 
 
-// 3. Consulta: Listar todos os cursos (GET /api/cursos)
-router.get('/', isAuthenticated, cursoController.findAll);
+// Rota para listar todos os cursos (Read All)
+router.get('/', cursoController.findAll);
 
-// 4. Exclusão: Excluir curso (DELETE /api/cursos/:id)
-// Implementar lógica de verificação de alunos no Controller!
-router.delete('/:id', isAuthenticated, cursoController.remove);
+// Rota para buscar um curso por ID (Read One)
+router.get('/:id', cursoController.findById); 
+
+// Rota para cadastrar um novo curso (Create)
+router.post('/', cursoController.create);
+
+// Rota para atualizar um curso por ID (Update)
+router.put('/:id', cursoController.update);
+
+// Rota para excluir um curso por ID (Delete)
+router.delete('/:id', cursoController.remove);
 
 module.exports = router;

@@ -12,11 +12,20 @@ const Home = ({ user }) => {
             </p>
             
             {!user || !user.isLoggedIn ? (
-                <p>
-                    <a href="/login" style={{ fontSize: '1.1em', color: '#28a745', textDecoration: 'none', fontWeight: 'bold' }}>
-                        Faça login para acessar as funcionalidades de gestão (Alunos e Cursos).
-                    </a>
-                </p>
+                // --- BOTÕES ADICIONADOS/MODIFICADOS AQUI ---
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px' }}>
+                    <p>
+                        <a href="/login" style={{ fontSize: '1.1em', color: '#28a745', textDecoration: 'none', fontWeight: 'bold', padding: '10px 20px', border: '2px solid #28a745', borderRadius: '5px' }}>
+                            Fazer Login
+                        </a>
+                    </p>
+                    <p>
+                        <a href="/register" style={{ fontSize: '1.1em', color: '#fff', backgroundColor: '#007bff', textDecoration: 'none', fontWeight: 'bold', padding: '10px 20px', borderRadius: '5px' }}>
+                            Cadastre-se
+                        </a>
+                    </p>
+                </div>
+                // ------------------------------------------
             ) : (
                 <p style={{ color: '#007bff' }}>Você está autenticado e pronto para começar.</p>
             )}
