@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { register } from '../api/sgaApi';
+import { register } from '../api/authApi';
 import { useAuth } from '../AuthContext'; 
 
 /**

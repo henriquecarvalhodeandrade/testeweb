@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import CursoCard from '../components/CursoCard'; 
 import CursoForm from '../components/Forms/CursoForm'; 
-import { fetchCursos, deleteCurso, fetchCursoById } from '../api/sgaApi'; 
+// IMPORT REFACTOR: Importando de cursosApi
+import { fetchCursos, deleteCurso, fetchCursoById } from '../api/cursosApi'; 
 
 const Cursos = () => {
     const [cursos, setCursos] = useState([]);

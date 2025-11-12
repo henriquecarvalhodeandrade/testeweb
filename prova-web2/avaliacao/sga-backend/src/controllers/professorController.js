@@ -3,7 +3,9 @@ const professorModel = require('../models/professorModel');
 
 // 1. Cadastro de Professor (Create)
 const create = async (req, res) => {
-    const { nome, matricula, curso_id } = req.body;
+    // CORREÇÃO: Definimos curso_id como opcional (default null) pois o formulário simples não o envia.
+    // O backend agora aceitará o POST com apenas { nome, matricula }
+    const { nome, matricula, curso_id = null } = req.body; 
     try {
         const novoProfessor = await professorModel.create(nome, matricula, curso_id);
         res.status(201).json(novoProfessor); 
@@ -45,6 +47,7 @@ const findById = async (req, res) => {
 // 2. Edição: Atualizar dados de um professor (Update)
 const update = async (req, res) => {
     const { id } = req.params;
+    // O frontend envia { nome, matricula } - sem curso_id para edição básica
     const { nome, matricula } = req.body; 
 
     try {

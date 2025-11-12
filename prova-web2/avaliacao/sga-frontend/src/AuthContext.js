@@ -1,7 +1,12 @@
 // sga-frontend/src/AuthContext.js
 
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { checkAuthStatus, login as apiLogin, logout as apiLogout, register as apiRegister } from './api/sgaApi';
+import { 
+    checkAuthStatus, 
+    login as apiLogin, 
+    logout as apiLogout, 
+    register as apiRegister 
+} from './api/authApi'; // Deve ser './api/authApi'
 
 const AuthContext = createContext();
 

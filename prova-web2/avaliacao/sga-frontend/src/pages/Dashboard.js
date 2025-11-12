@@ -26,8 +26,7 @@ const Dashboard = () => {
     const options = [
         { title: 'Gerenciar Alunos', description: 'Cadastrar, listar e editar informações de alunos.', link: '/alunos' },
         { title: 'Gerenciar Cursos', description: 'Cadastrar, listar e excluir cursos.', link: '/cursos' },
-        // ALTERADO: Habilitar o link para Professores e definir a rota
-        { title: 'Gerenciar Professores', description: 'Cadastrar, listar e editar informações de professores.', link: '/professores', disabled: false }
+        { title: 'Gerenciar Professores', description: 'Cadastrar, listar e editar informações de professores.', link: '/professores'}
     ];
 
     return (

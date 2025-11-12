@@ -28,6 +28,7 @@ const findAllWithCourse = async () => {
 
 // Busca um professor pelo ID
 const findById = async (id) => {
+    // Retorna todos os campos, incluindo a matrícula, que será usada no formulário de edição do front
     const [rows] = await db.query('SELECT * FROM professores WHERE id = ?', [id]);
     return rows[0]; 
 };

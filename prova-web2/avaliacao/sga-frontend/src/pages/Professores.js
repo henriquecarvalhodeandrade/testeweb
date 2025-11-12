@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import ProfessorCard from '../components/ProfessorCard'; 
 import ProfessorForm from '../components/Forms/ProfessorForm'; 
-import { fetchProfessores, deleteProfessor, fetchProfessorById } from '../api/sgaApi';
+import { fetchProfessores, deleteProfessor, fetchProfessorById } from '../api/professoresApi';
 
 const Professores = ({ user }) => {
     const [professores, setProfessores] = useState([]);

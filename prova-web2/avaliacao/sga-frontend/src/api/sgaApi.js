@@ -8,8 +8,15 @@ const sgaApi = axios.create({
     withCredentials: true, 
 });
 
-// FUNÇÃO HELPER: Para extrair o .data automaticamente e padronizar o tratamento de erro.
-const apiCall = async (method, url, data = null) => {
+/**
+ * FUNÇÃO HELPER: Para extrair o .data automaticamente e padronizar o tratamento de erro.
+ * @param {string} method - O método HTTP ('get', 'post', 'put', 'delete').
+ * @param {string} url - A URL da API (relativa a baseURL).
+ * @param {Object} [data=null] - Os dados a serem enviados no corpo da requisição.
+ * @returns {Promise<Object>} - O payload de dados da resposta.
+ * @throws {Error} - Lança um erro com uma mensagem amigável (backend ou de rede).
+ */
+export const apiCall = async (method, url, data = null) => {
     try {
         const response = await sgaApi.request({ method, url, data });
         return response.data; // Retorna APENAS o payload de dados
@@ -23,114 +30,6 @@ const apiCall = async (method, url, data = null) => {
         throw new Error(errorMessage); 
     }
 }
-
-// =================================================================
-// 2. Funções de Autenticação (Rotas: /api/auth)
-// =================================================================
-
-export const register = (nome, email, senha) => {
-    return apiCall('post', '/auth/register', { nome, email, senha });
-};
-
-export const login = (email, senha) => {
-    return apiCall('post', '/auth/login', { email, senha });
-};
-
-export const logout = () => {
-    // Não precisa de .data, pois 204 No Content é comum, mas mantemos o padrão
-    return apiCall('post', '/auth/logout');
-};
-
-// Mapeado do getLoggedInUser (Backend) para o nome esperado pelo Frontend (checkAuthStatus)
-export const checkAuthStatus = () => { 
-    return apiCall('get', '/auth/me'); // Retorna response.data
-};
-
-// =================================================================
-// 3. Funções CRUD para Alunos (Rotas: /api/alunos)
-// =================================================================
-
-// Mapeado de getAllAlunos para o nome esperado pelo Frontend (fetchAlunos)
-export const fetchAlunos = () => { 
-    return apiCall('get', '/alunos'); // Retorna response.data (Array de alunos)
-};
-
-// Função para buscar um único aluno por ID
-export const fetchAlunoById = (id) => { 
-    return apiCall('get', `/alunos/${id}`); // Retorna response.data (Objeto aluno)
-};
-
-export const createAluno = (alunoData) => {
-    return apiCall('post', '/alunos', alunoData); // Retorna response.data
-};
-
-// Nome da função que o AlunoForm.js espera
-export const updateAluno = (id, alunoData) => { 
-    return apiCall('put', `/alunos/${id}`, alunoData); // Retorna response.data (Objeto/Mensagem de sucesso)
-};
-
-// Mantemos o updateAlunoCourse por compatibilidade
-export const updateAlunoCourse = (id, alunoData) => { 
-    return apiCall('put', `/alunos/${id}/curso`, { novo_curso_id: alunoData.curso_id }); 
-};
-
-export const deleteAluno = (id) => {
-    // Retorna 204 No Content, mas o helper retorna response.data (vazio/mensagem de sucesso)
-    return apiCall('delete', `/alunos/${id}`); 
-};
-
-
-// =================================================================
-// 4. Funções CRUD para Cursos (Rotas: /api/cursos)
-// =================================================================
-
-// Mapeado de getAllCursos para o nome esperado pelo Frontend (fetchCursos)
-export const fetchCursos = () => { 
-    return apiCall('get', '/cursos'); // Retorna response.data (Array de cursos)
-};
-
-export const createCurso = (cursoData) => {
-    return apiCall('post', '/cursos', cursoData);
-};
-
-export const updateCurso = (id, cursoData) => {
-    return apiCall('put', `/cursos/${id}`, cursoData);
-};
-
-export const deleteCurso = (id) => {
-    return apiCall('delete', `/cursos/${id}`);
-};
-// sga-frontend/src/api/sgaApi.js (Adições)
-
-// ... (código existente até o final do bloco 4. Funções CRUD para Cursos)
-
-// =================================================================
-// 5. Funções CRUD para Professores (Rotas: /api/professores)
-// (Assumindo que o backend já está implementado)
-// =================================================================
-
-export const fetchProfessores = () => { 
-    return apiCall('get', '/professores'); // Retorna response.data (Array de professores)
-};
-
-export const fetchProfessorById = (id) => { 
-    return apiCall('get', `/professores/${id}`); // Retorna response.data (Objeto professor)
-};
-
-export const createProfessor = (professorData) => {
-    return apiCall('post', '/professores', professorData); // Retorna response.data
-};
-
-export const updateProfessor = (id, professorData) => { 
-    // Assumindo que a atualização da entidade principal é feita assim
-    return apiCall('put', `/professores/${id}`, professorData); 
-};
-
-export const deleteProfessor = (id) => {
-    // Retorna 204 No Content, mas o helper retorna response.data (vazio/mensagem de sucesso)
-    return apiCall('delete', `/professores/${id}`); 
-};
-
 
 // Exporta a instância do axios configurada para uso direto, se necessário
 export default sgaApi;

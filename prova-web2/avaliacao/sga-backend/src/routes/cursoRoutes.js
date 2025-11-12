@@ -1,7 +1,7 @@
 // sga-backend/src/routes/cursoRoutes.js
 const express = require('express');
 const cursoController = require('../controllers/cursoController');
-const { requireAuth } = require('../middlewares/authMiddleWare'); 
+const requireAuth = require('../middlewares/authMiddleWare'); // CORREÇÃO: Importa diretamente o valor exportado.
 
 const router = express.Router();
 

@@ -1,6 +1,7 @@
 // sga-frontend/src/components/Forms/CursoForm.js
 import React, { useState, useEffect } from 'react';
-import { createCurso, updateCurso } from '../../api/sgaApi';
+// IMPORT REFACTOR: Importando de cursosApi
+import { createCurso, updateCurso } from '../../api/cursosApi';
 
 const formContainerStyle = {
     maxWidth: '500px',
@@ -96,6 +97,7 @@ const CursoForm = ({ cursoParaEditar, onSuccess }) => {
             }
 
         } catch (err) {
+            // Usa err.message que é o erro padronizado pelo apiCall
             setError(err.message || 'Erro de rede ou servidor.');
         } finally {
             setLoading(false);

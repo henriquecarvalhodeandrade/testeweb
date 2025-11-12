@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 // import AlunoCard from '../components/AlunoCard'; // Não é mais necessário para a exibição em tabela
 import AlunoForm from '../components/Forms/AlunoForm'; 
-import { fetchAlunos, deleteAluno, fetchAlunoById } from '../api/sgaApi';
+// IMPORT REFACTOR: Importando de alunosApi
+import { fetchAlunos, deleteAluno, fetchAlunoById } from '../api/alunosApi';
 
 const Alunos = ({ user }) => {
     const [alunos, setAlunos] = useState([]);

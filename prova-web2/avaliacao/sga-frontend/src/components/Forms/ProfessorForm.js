@@ -1,6 +1,7 @@
 // sga-frontend/src/components/Forms/ProfessorForm.js
 import React, { useState } from 'react';
-import { createProfessor, updateProfessor } from '../../api/sgaApi';
+// IMPORT REFACTOR: Importando de professoresApi
+import { createProfessor, updateProfessor } from '../../api/professoresApi';
 
 const ProfessorForm = ({ professorParaEditar, onSuccess }) => {
     const isEditing = !!professorParaEditar;

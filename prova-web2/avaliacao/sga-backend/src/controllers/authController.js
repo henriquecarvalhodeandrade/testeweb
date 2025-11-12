@@ -24,22 +24,22 @@ const register = async (req, res) => {
 };
 
 // 2. Login de Usuário
-// sga-backend/src/controllers/authController.js
 const login = async (req, res) => {
-    const { email, senha } = req.body;
+    // CORREÇÃO: Renomeia 'senha' para 'senhaInput' para evitar qualquer colisão/confusão de nome.
+    const { email, senha: senhaInput } = req.body; 
     try {
         const user = await userModel.findByEmail(email);
 
         // 1. Loga a senha e o hash recuperado
-        console.log('Senha digitada (texto puro):', senha);
+        console.log('Senha digitada (texto puro):', senhaInput); // Usa a nova variável
         console.log('Hash do DB:', user ? user.senha : 'Usuário não encontrado'); 
         
         if (!user) {
             return res.status(401).json({ erro: 'Credenciais inválidas.' });
         }
 
-        // 5. Compara a senha digitada com o hash salvo
-        const passwordMatch = await bcrypt.compare(senha, user.senha);
+        // 5. Compara a senha digitada (senhaInput) com o hash salvo (user.senha)
+        const passwordMatch = await bcrypt.compare(senhaInput, user.senha); // Usa a nova variável
         
         // 2. Loga o resultado da comparação
         console.log('Resultado da comparação (passwordMatch):', passwordMatch); 

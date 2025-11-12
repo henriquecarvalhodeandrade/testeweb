@@ -1,6 +1,8 @@
 // sga-frontend/src/components/Forms/AlunoForm.js
 import React, { useState, useEffect } from 'react';
-import { createAluno, updateAluno, fetchCursos, updateAlunoCourse } from '../../api/sgaApi';
+// IMPORT REFACTOR: Funções de Aluno de alunosApi e fetchCursos de cursosApi
+import { createAluno, updateAluno, updateAlunoCourse } from '../../api/alunosApi'; 
+import { fetchCursos } from '../../api/cursosApi';
 
 const AlunoForm = ({ alunoParaEditar, onSuccess }) => {
     const isEditing = !!alunoParaEditar;
@@ -48,7 +50,8 @@ const AlunoForm = ({ alunoParaEditar, onSuccess }) => {
                 
                 // 2. Edição (Update) - Chamada separada para a chave estrangeira
                 if (alunoParaEditar.curso_id !== alunoData.curso_id) {
-                     await updateAlunoCourse(alunoParaEditar.id, alunoData.curso_id); 
+                     // Passa o objeto completo ou apenas o ID, dependendo do que o backend espera (adaptado para o formato da API)
+                     await updateAlunoCourse(alunoParaEditar.id, { curso_id: alunoData.curso_id }); 
                 }
 
                 alert('Aluno atualizado com sucesso!');
@@ -60,7 +63,8 @@ const AlunoForm = ({ alunoParaEditar, onSuccess }) => {
             }
             onSuccess(); // Chama a função para atualizar a lista na página pai
         } catch (err) {
-            setError(err.response?.data?.erro || 'Erro na operação.');
+            // Usa err.message que é o erro padronizado pelo apiCall
+            setError(err.message || 'Erro na operação.');
         }
     };
 
