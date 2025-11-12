@@ -1,26 +1,75 @@
-/* Estilo Global Básico */
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f7f6; /* Fundo limpo e suave */
+/* ===========================
+   Estilos Globais
+   =========================== */
+
+/* Reset básico */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-/* 7. Layout com Responsividade - Exemplo de Media Query */
-/* Aplicável a telas pequenas (smartphones) */
+/* Corpo da aplicação */
+body {
+  font-family: 'Inter', 'Arial', sans-serif;
+  background-color: #f5f6fa;
+  color: #2c3e50;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* Links padrão */
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+/* Botões padrão */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  background-color: #004080;
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: scale(1.03);
+}
+
+/* Layout base */
+#root, .App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scroll suave */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===========================
+   Responsividade
+   =========================== */
+@media (max-width: 768px) {
+  body {
+    font-size: 0.95rem;
+  }
+}
+
 @media (max-width: 600px) {
   h1 {
-    font-size: 1.5em;
-  }
-  
-  .navbar {
-    flex-direction: column;
-    padding: 10px;
+    font-size: 1.5rem;
   }
 
-  .nav-links a {
-    margin: 5px 0;
-    padding: 5px 10px;
-    font-size: 0.9em;
+  button {
+    font-size: 0.9rem;
+    padding: 7px 14px;
   }
 }
