@@ -1,29 +1,38 @@
-// sga-frontend/src/components/ProfessorCard.js
+// sga-frontend/src/components/ProfessorCard.js (REFATORADO)
 import React from 'react';
+import cardStyles from '../styles/components/Cards.module.css';
+import buttonStyles from '../styles/components/Buttons.module.css';
 
 const ProfessorCard = ({ professor, onDelete, onEdit }) => {
     return (
-        <div style={{ border: '1px solid #ddd', borderRadius: '8px', padding: '15px', boxShadow: '2px 2px 5px rgba(0,0,0,0.1)' }}>
-            <h3>{professor.nome}</h3>
-            <p><strong>ID:</strong> {professor.id}</p>
-            {/* Corrigido para mostrar 'matricula' */}
-            <p><strong>Matrícula:</strong> {professor.matricula || 'N/A'}</p> 
-            {/* Adicionado: Exibe o nome do curso vindo do JOIN no backend */}
-            <p><strong>Curso Principal:</strong> {professor.nome_curso || 'Não Definido'}</p> 
+        <div className={cardStyles.entityCard}>
+            <div className={cardStyles.entityCardHeader}>
+                <div>
+                    <h3 className={cardStyles.entityCardTitle}>
+                        🧑‍🏫 {professor.nome}
+                    </h3>
+                    <p className={cardStyles.entityCardSubtitle}>
+                        SIAPE: {professor.siape} | Matrícula: {professor.matricula || 'N/A'}
+                    </p>
+                </div>
+            </div>
             
-            <div style={{ marginTop: '15px' }}>
+            <div className={cardStyles.entityCardContent}>
+                <p><strong>Curso Principal:</strong> {professor.nome_curso || 'Não Definido'}</p>
+            </div>
+            
+            <div className={cardStyles.entityCardActions}>
                 <button 
                     onClick={() => onEdit(professor.id)} 
-                    style={{ background: '#007bff', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '4px', cursor: 'pointer', marginRight: '10px' }}
+                    className={`${buttonStyles.button} ${buttonStyles.outline} ${buttonStyles.small}`}
                 >
-                    Editar Dados
+                    ✏️ Editar Dados
                 </button>
-                {/* Adicionar aqui um botão ou modal para editar curso (updateCourse), se desejado. */}
                 <button 
                     onClick={() => onDelete(professor.id)} 
-                    style={{ background: '#dc3545', color: '#fff', border: 'none', padding: '8px 12px', borderRadius: '4px', cursor: 'pointer' }}
+                    className={`${buttonStyles.button} ${buttonStyles.danger} ${buttonStyles.small}`}
                 >
-                    Excluir
+                    🗑️ Excluir
                 </button>
             </div>
         </div>

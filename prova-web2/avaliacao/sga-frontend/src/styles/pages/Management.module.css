@@ -1,0 +1,160 @@
+.managementPage {
+  padding: var(--spacing-lg);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.pageHeader {
+  margin-bottom: var(--spacing-xl);
+}
+
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.pageDescription {
+  color: var(--gray-600);
+  font-size: 1.125rem;
+}
+
+.pageActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  background: var(--white);
+  border: 1px solid var(--gray-300);
+  border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
+  min-width: 400px;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 0.875rem;
+}
+
+.searchInput::placeholder {
+  color: var(--gray-400);
+}
+
+.statsBar {
+  display: flex;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--gray-50);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--gray-200);
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.statNumber {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-top: var(--spacing-xs);
+}
+
+/* Form Modal */
+.formModal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-md);
+}
+
+.formModalContent {
+  background: var(--white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.formModalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.formModalTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+.formModalBody {
+  padding: var(--spacing-lg);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .managementPage {
+    padding: var(--spacing-md);
+  }
+  
+  .pageTitle {
+    font-size: 1.75rem;
+  }
+  
+  .pageActions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .searchBox {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .statsBar {
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    justify-content: space-around;
+  }
+  
+  .statItem {
+    flex: 1;
+    min-width: 80px;
+  }
+}

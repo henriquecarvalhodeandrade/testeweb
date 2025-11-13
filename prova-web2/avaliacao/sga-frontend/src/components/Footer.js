@@ -1,17 +1,17 @@
-// sga-frontend/src/components/Footer.js
+// sga-frontend/src/components/Footer.js (REFATORADO)
 import React from 'react';
+// ATUALIZAR IMPORTS:
+import layoutStyles from '../styles/components/Layout.module.css';
 
 const Footer = () => {
     return (
-        <footer style={{ 
-            marginTop: 'auto',
-            padding: '15px 30px', 
-            textAlign: 'center', 
-            backgroundColor: '#343a40', 
-            color: '#fff',
-            fontSize: '0.9em'
-        }}>
-            <p>© {new Date().getFullYear()} Sistema de Gerenciamento Acadêmico. Arquitetura MVC com Node.js e React.</p>
+        <footer className={layoutStyles.footer}>
+            <div className="container">
+                <p className={layoutStyles.footerText}>
+                    © {new Date().getFullYear()} Sistema de Gerenciamento Acadêmico. 
+                    Arquitetura MVC com Node.js e React.
+                </p>
+            </div>
         </footer>
     );
 };

@@ -1,19 +1,23 @@
-// sga-frontend/src/pages/Professores.js
+// sga-frontend/src/pages/Professores.js (REFATORADO COM TABELA)
 import React, { useState, useEffect } from 'react';
-import ProfessorCard from '../components/ProfessorCard'; 
-import ProfessorForm from '../components/Forms/ProfessorForm'; 
+import ProfessorForm from '../components/Forms/ProfessorForm';
 import { fetchProfessores, deleteProfessor, fetchProfessorById } from '../api/professoresApi';
+// ATUALIZAR IMPORTS:
+import managementStyles from '../styles/pages/Management.module.css';
+import tableStyles from '../styles/components/Tables.module.css';
+import buttonStyles from '../styles/components/Buttons.module.css';
 
-const Professores = ({ user }) => {
+const Professores = () => {
     const [professores, setProfessores] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showForm, setShowForm] = useState(false); // Estado para mostrar formulário de cadastro
-    const [editingProfessor, setEditingProfessor] = useState(null); // Estado para edição
+    const [showForm, setShowForm] = useState(false);
+    const [editingProfessor, setEditingProfessor] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const loadProfessores = async () => {
         try {
-            const data = await fetchProfessores(); 
+            const data = await fetchProfessores();
             setProfessores(data);
             setLoading(false);
         } catch (err) {
@@ -29,7 +33,7 @@ const Professores = ({ user }) => {
     const handleDelete = async (id) => {
         if (window.confirm('Tem certeza que deseja excluir este professor? Esta ação é irreversível.')) {
             try {
-                await deleteProfessor(id); 
+                await deleteProfessor(id);
                 setProfessores(professores.filter(professor => professor.id !== id));
             } catch (err) {
                 alert('Erro ao excluir professor. Verifique se o backend está rodando.');
@@ -39,7 +43,7 @@ const Professores = ({ user }) => {
     
     const handleEdit = async (id) => {
         try {
-            const professor = await fetchProfessorById(id); 
+            const professor = await fetchProfessorById(id);
             setEditingProfessor(professor);
             setShowForm(true);
         } catch(err) {
@@ -50,43 +54,169 @@ const Professores = ({ user }) => {
     const handleSuccess = () => {
         setShowForm(false);
         setEditingProfessor(null);
-        loadProfessores(); // Recarrega a lista após CRUD
+        loadProfessores();
     };
 
-    if (loading) return <h2>Carregando professores...</h2>;
-    if (error) return <h2 style={{ color: 'red' }}>{error}</h2>;
+    // DEPOIS (corrigido):
+    const filteredProfessores = professores.filter(professor => {
+    // Verifica se professor e professor.nome existem
+    if (!professor || !professor.nome) return false;
+    
+    const nome = professor.nome.toString().toLowerCase();
+    const term = searchTerm.toString().toLowerCase();
+    
+    return nome.includes(term);
+    });
+
+    if (loading) return (
+        <div className={managementStyles.managementPage}>
+            <div className={tableStyles.tableLoading}>Carregando professores...</div>
+        </div>
+    );
+
+    if (error && !professores.length) return (
+        <div className={managementStyles.managementPage}>
+            <div style={{ color: 'var(--error-color)' }}>{error}</div>
+        </div>
+    );
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h1>Gerenciamento de Professores 🧑‍🏫</h1>
-            
-            <button 
-                onClick={() => { setShowForm(true); setEditingProfessor(null); }}
-                style={{ background: '#0056b3', color: '#fff', border: 'none', padding: '10px 15px', borderRadius: '4px', cursor: 'pointer', marginBottom: '20px' }}
-            >
-                ➕ Cadastrar Novo Professor
-            </button>
-            
-            {/* Renderização Condicional do Formulário */}
-            {(showForm || editingProfessor) && (
-                <div style={{ padding: '20px', border: '1px dashed #0056b3', marginBottom: '20px' }}>
-                     <button onClick={() => {setShowForm(false); setEditingProfessor(null);}} style={{ float: 'right', background: 'transparent', border: 'none', cursor: 'pointer', color: '#dc3545' }}>
-                         X Fechar
-                     </button>
-                    <ProfessorForm professorParaEditar={editingProfessor} onSuccess={handleSuccess} />
+        <div className={managementStyles.managementPage}>
+            {/* Header */}
+            <div className={managementStyles.pageHeader}>
+                <h1 className={managementStyles.pageTitle}>
+                    🧑‍🏫 Gerenciamento de Professores
+                </h1>
+                <p className={managementStyles.pageDescription}>
+                    Cadastre e gerencie todos os professores do sistema
+                </p>
+            </div>
+
+            {/* Barra de Ações e Estatísticas */}
+            <div className={managementStyles.pageActions}>
+                <button 
+                    onClick={() => { setShowForm(true); setEditingProfessor(null); }}
+                    className={`${buttonStyles.button} ${buttonStyles.primary}`}
+                >
+                    ➕ Novo Professor
+                </button>
+                
+                <div className={managementStyles.searchBox}>
+                    <input
+                        type="text"
+                        placeholder="Buscar por nome, matrícula ou curso..."
+                        className={managementStyles.searchInput}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <span>🔍</span>
+                </div>
+            </div>
+
+            {/* Modal do Formulário */}
+            {showForm && (
+                <div className={managementStyles.formModal}>
+                    <div className={managementStyles.formModalContent}>
+                        <div className={managementStyles.formModalHeader}>
+                            <h2 className={managementStyles.formModalTitle}>
+                                {editingProfessor ? '✏️ Editar Professor' : '➕ Novo Professor'}
+                            </h2>
+                            <button 
+                                onClick={() => {setShowForm(false); setEditingProfessor(null);}} 
+                                className={`${buttonStyles.button} ${buttonStyles.outlineSecondary} ${buttonStyles.small}`}
+                            >
+                                ✕ Fechar
+                            </button>
+                        </div>
+                        <div className={managementStyles.formModalBody}>
+                            <ProfessorForm professorParaEditar={editingProfessor} onSuccess={handleSuccess} />
+                        </div>
+                    </div>
                 </div>
             )}
-            
-            <h2>Lista de Professores ({professores.length} cadastrados)</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
-                {professores.map(professor => (
-                    <ProfessorCard 
-                        key={professor.id}
-                        professor={professor}
-                        onDelete={handleDelete}
-                        onEdit={handleEdit}
-                    />
-                ))}
+
+            {/* Tabela de Professores */}
+            <div className={tableStyles.tableContainer}>
+                <div className={tableStyles.tableHeader}>
+                    <h3 className={tableStyles.tableTitle}>
+                        Lista de Professores ({filteredProfessores.length})
+                    </h3>
+                </div>
+
+                <div className={tableStyles.tableResponsive}>
+                    <table className={tableStyles.table}>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Matrícula</th>
+                                <th>Curso</th>
+                                <th style={{ width: '150px', textAlign: 'center' }}>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredProfessores.map(professor => (
+                                <tr key={professor.id}>
+                                    <td>
+                                        <span className={tableStyles.badge}>
+                                            #{professor.id}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <div style={{ fontWeight: '600' }}>{professor.nome}</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {professor.matricula || '-'}
+                                    </td>
+                                    <td>
+                                        {professor.nome_curso || (
+                                            <span style={{ color: 'var(--gray-400)', fontStyle: 'italic' }}>
+                                                Não definido
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td>
+                                        <div className={tableStyles.actionsCell}>
+                                            <button 
+                                                onClick={() => handleEdit(professor.id)} 
+                                                className={`${buttonStyles.button} ${buttonStyles.outline} ${buttonStyles.small}`}
+                                                title="Editar professor"
+                                            >
+                                                ✏️
+                                            </button>
+                                            <button 
+                                                onClick={() => handleDelete(professor.id)} 
+                                                className={`${buttonStyles.button} ${buttonStyles.danger} ${buttonStyles.small}`}
+                                                title="Excluir professor"
+                                            >
+                                                🗑️
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {filteredProfessores.length === 0 && (
+                    <div className={tableStyles.tableEmpty}>
+                        <div className={tableStyles.emptyIcon}>🧑‍🏫</div>
+                        <div className={tableStyles.emptyText}>
+                            {searchTerm ? 'Nenhum professor encontrado' : 'Nenhum professor cadastrado'}
+                        </div>
+                        {!searchTerm && (
+                            <button 
+                                onClick={() => setShowForm(true)}
+                                className={`${buttonStyles.button} ${buttonStyles.primary}`}
+                            >
+                                ➕ Cadastrar Primeiro Professor
+                            </button>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

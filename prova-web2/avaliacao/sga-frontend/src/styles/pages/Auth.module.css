@@ -1,0 +1,74 @@
+.authContainer {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl) 0;
+}
+
+.authCard {
+  background: var(--white);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-200);
+  width: 100%;
+  max-width: 400px;
+}
+
+.authHeader {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.authTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: var(--spacing-xs);
+}
+
+.authSubtitle {
+  color: var(--gray-600);
+  font-size: 0.875rem;
+}
+
+.authForm {
+  margin-bottom: var(--spacing-lg);
+}
+
+.authActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.authFooter {
+  text-align: center;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--gray-200);
+  color: var(--gray-600);
+  font-size: 0.875rem;
+}
+
+/* Estados de loading */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.loadingSpinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

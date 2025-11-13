@@ -1,20 +1,23 @@
-// sga-frontend/src/pages/Alunos.js (Modificado para Tabela)
+// sga-frontend/src/pages/Alunos.js (REFATORADO COM TABELA)
 import React, { useState, useEffect } from 'react';
-// import AlunoCard from '../components/AlunoCard'; // Não é mais necessário para a exibição em tabela
-import AlunoForm from '../components/Forms/AlunoForm'; 
-// IMPORT REFACTOR: Importando de alunosApi
+import AlunoForm from '../components/Forms/AlunoForm';
 import { fetchAlunos, deleteAluno, fetchAlunoById } from '../api/alunosApi';
+// ATUALIZAR IMPORTS:
+import managementStyles from '../styles/pages/Management.module.css';
+import tableStyles from '../styles/components/Tables.module.css';
+import buttonStyles from '../styles/components/Buttons.module.css';
 
-const Alunos = ({ user }) => {
+const Alunos = () => {
     const [alunos, setAlunos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
     const [editingAluno, setEditingAluno] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const loadAlunos = async () => {
         try {
-            const data = await fetchAlunos(); // 3. Consulta: Listar todos (com JOIN)
+            const data = await fetchAlunos();
             setAlunos(data);
             setLoading(false);
         } catch (err) {
@@ -30,7 +33,7 @@ const Alunos = ({ user }) => {
     const handleDelete = async (id) => {
         if (window.confirm('Tem certeza que deseja excluir este aluno? Esta ação é irreversível.')) {
             try {
-                await deleteAluno(id); // 4. Exclusão: Chama API DELETE
+                await deleteAluno(id);
                 setAlunos(alunos.filter(aluno => aluno.id !== id));
             } catch (err) {
                 alert('Erro ao excluir aluno. Verifique se o backend está rodando.');
@@ -40,7 +43,7 @@ const Alunos = ({ user }) => {
     
     const handleEdit = async (id) => {
         try {
-            const aluno = await fetchAlunoById(id); // Busca dados para preencher o formulário
+            const aluno = await fetchAlunoById(id);
             setEditingAluno(aluno);
             setShowForm(true);
         } catch(err) {
@@ -51,114 +54,170 @@ const Alunos = ({ user }) => {
     const handleSuccess = () => {
         setShowForm(false);
         setEditingAluno(null);
-        loadAlunos(); // Recarrega a lista após CRUD
+        loadAlunos();
     };
 
-    if (loading) return <h2>Carregando alunos...</h2>;
-    if (error) return <h2 style={{ color: 'red' }}>{error}</h2>;
+    // Filtro de busca
+    const filteredAlunos = alunos.filter(aluno =>
+        aluno.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        aluno.matricula.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (aluno.nome_curso && aluno.nome_curso.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
 
-    // Estilos para a tabela
-    const tableStyle = {
-        width: '100%',
-        borderCollapse: 'collapse',
-        marginTop: '15px',
-    };
-    
-    const thStyle = {
-        border: '1px solid #ddd',
-        padding: '12px',
-        textAlign: 'left',
-        backgroundColor: '#f2f2f2',
-    };
+    if (loading) return (
+        <div className={managementStyles.managementPage}>
+            <div className={tableStyles.tableLoading}>Carregando alunos...</div>
+        </div>
+    );
 
-    const tdStyle = {
-        border: '1px solid #ddd',
-        padding: '8px',
-        textAlign: 'left',
-    };
-    
-    const actionButtonStyle = {
-        padding: '5px 10px',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        border: 'none',
-        marginRight: '5px',
-    };
-    
-    const editButtonStyle = {
-        ...actionButtonStyle,
-        background: '#007bff', 
-        color: '#fff', 
-    };
-    
-    const deleteButtonStyle = {
-        ...actionButtonStyle,
-        background: '#dc3545', 
-        color: '#fff', 
-    };
+    if (error && !alunos.length) return (
+        <div className={managementStyles.managementPage}>
+            <div style={{ color: 'var(--error-color)' }}>{error}</div>
+        </div>
+    );
 
     return (
-        <div style={{ padding: '20px' }}>
-            <h1>Gerenciamento de Alunos 📚</h1>
+        <div className={managementStyles.managementPage}>
+            {/* Header */}
+            <div className={managementStyles.pageHeader}>
+                <h1 className={managementStyles.pageTitle}>
+                    👨‍🎓 Gerenciamento de Alunos
+                </h1>
+                <p className={managementStyles.pageDescription}>
+                    Cadastre, visualize e gerencie todos os alunos do sistema
+                </p>
+            </div>
+
+            {/* Barra de Ações e Estatísticas */}
+            <div className={managementStyles.pageActions}>
+                <button 
+                    onClick={() => { setShowForm(true); setEditingAluno(null); }}
+                    className={`${buttonStyles.button} ${buttonStyles.primary}`}
+                >
+                    ➕ Novo Aluno
+                </button>
+                
+                <div className={managementStyles.searchBox}>
+                    <input
+                        type="text"
+                        placeholder="Buscar por nome, matrícula ou curso..."
+                        className={managementStyles.searchInput}
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <span>🔍</span>
+                </div>
+            </div>
             
-            <button 
-                onClick={() => { setShowForm(true); setEditingAluno(null); }}
-                style={{ background: '#28a745', color: '#fff', border: 'none', padding: '10px 15px', borderRadius: '4px', cursor: 'pointer', marginBottom: '20px' }}
-            >
-                ➕ Cadastrar Novo Aluno
-            </button>
-            
-            {/* Renderização Condicional do Formulário */}
-            {(showForm || editingAluno) && (
-                <div style={{ padding: '20px', border: '1px dashed #0056b3', marginBottom: '20px' }}>
-                     <button onClick={() => {setShowForm(false); setEditingAluno(null);}} style={{ float: 'right', background: 'transparent', border: 'none', cursor: 'pointer', color: '#dc3545' }}>
-                         X Fechar
-                     </button>
-                    <AlunoForm alunoParaEditar={editingAluno} onSuccess={handleSuccess} />
+            {/* Modal do Formulário */}
+            {showForm && (
+                <div className={managementStyles.formModal}>
+                    <div className={managementStyles.formModalContent}>
+                        <div className={managementStyles.formModalHeader}>
+                            <h2 className={managementStyles.formModalTitle}>
+                                {editingAluno ? '✏️ Editar Aluno' : '➕ Novo Aluno'}
+                            </h2>
+                            <button 
+                                onClick={() => {setShowForm(false); setEditingAluno(null);}} 
+                                className={`${buttonStyles.button} ${buttonStyles.outlineSecondary} ${buttonStyles.small}`}
+                            >
+                                ✕ Fechar
+                            </button>
+                        </div>
+                        <div className={managementStyles.formModalBody}>
+                            <AlunoForm alunoParaEditar={editingAluno} onSuccess={handleSuccess} />
+                        </div>
+                    </div>
                 </div>
             )}
-            
-            <h2>Lista de Alunos ({alunos.length} cadastrados)</h2>
-            
+
             {/* Tabela de Alunos */}
-            <table style={tableStyle}>
-                <thead>
-                    <tr>
-                        <th style={{...thStyle, width: '5%'}}>ID</th>
-                        <th style={{...thStyle, width: '15%'}}>Matrícula</th>
-                        <th style={{...thStyle, width: '25%'}}>Nome</th>
-                        <th style={{...thStyle, width: '25%'}}>Curso</th>
-                        <th style={{...thStyle, width: '15%'}}>Data Nasc.</th>
-                        <th style={{...thStyle, width: '15%'}}>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {alunos.map(aluno => (
-                        <tr key={aluno.id} style={{ backgroundColor: '#fff' }}>
-                            <td style={tdStyle}>{aluno.id}</td>
-                            <td style={tdStyle}>{aluno.matricula}</td>
-                            <td style={tdStyle}>{aluno.nome}</td>
-                            <td style={tdStyle}>{aluno.nome_curso || 'Não Associado'}</td>
-                            <td style={tdStyle}>{aluno.data_nascimento}</td>
-                            <td style={tdStyle}>
-                                <button 
-                                    onClick={() => handleEdit(aluno.id)} 
-                                    style={editButtonStyle}
-                                >
-                                    ✏️ Editar
-                                </button>
-                                <button 
-                                    onClick={() => handleDelete(aluno.id)} 
-                                    style={deleteButtonStyle}
-                                >
-                                    🗑️ Excluir
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-            
+            <div className={tableStyles.tableContainer}>
+                <div className={tableStyles.tableHeader}>
+                    <h3 className={tableStyles.tableTitle}>
+                        Lista de Alunos ({filteredAlunos.length})
+                    </h3>
+                </div>
+
+                <div className={tableStyles.tableResponsive}>
+                    <table className={tableStyles.table}>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Matrícula</th>
+                                <th>Nome</th>
+                                <th>Curso</th>
+                                <th>Data Nasc.</th>
+                                <th style={{ width: '150px', textAlign: 'center' }}>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredAlunos.map(aluno => (
+                                <tr key={aluno.id}>
+                                    <td>
+                                        <span className={tableStyles.badge}>
+                                            #{aluno.id}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <strong>{aluno.matricula}</strong>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <div style={{ fontWeight: '600' }}>{aluno.nome}</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {aluno.nome_curso || (
+                                            <span style={{ color: 'var(--gray-400)', fontStyle: 'italic' }}>
+                                                Não associado
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td>
+                                        {aluno.data_nascimento || '-'}
+                                    </td>
+                                    <td>
+                                        <div className={tableStyles.actionsCell}>
+                                            <button 
+                                                onClick={() => handleEdit(aluno.id)} 
+                                                className={`${buttonStyles.button} ${buttonStyles.outline} ${buttonStyles.small}`}
+                                                title="Editar aluno"
+                                            >
+                                                ✏️
+                                            </button>
+                                            <button 
+                                                onClick={() => handleDelete(aluno.id)} 
+                                                className={`${buttonStyles.button} ${buttonStyles.danger} ${buttonStyles.small}`}
+                                                title="Excluir aluno"
+                                            >
+                                                🗑️
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {filteredAlunos.length === 0 && (
+                    <div className={tableStyles.tableEmpty}>
+                        <div className={tableStyles.emptyIcon}>👨‍🎓</div>
+                        <div className={tableStyles.emptyText}>
+                            {searchTerm ? 'Nenhum aluno encontrado' : 'Nenhum aluno cadastrado'}
+                        </div>
+                        {!searchTerm && (
+                            <button 
+                                onClick={() => setShowForm(true)}
+                                className={`${buttonStyles.button} ${buttonStyles.primary}`}
+                            >
+                                ➕ Cadastrar Primeiro Aluno
+                            </button>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

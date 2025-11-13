@@ -1,11 +1,17 @@
-// sga-frontend/src/components/Header.js
+// sga-frontend/src/components/Header.js (AJUSTADO)
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+// ATUALIZAR IMPORTS:
+import layoutStyles from '../styles/components/Layout.module.css';
 
 const Header = () => {
     const location = useLocation();
 
-    // Mapeamento simples de títulos por rota
+    // Não mostrar Header na página Home
+    if (location.pathname === '/') {
+        return null;
+    }
+
     const pageTitles = {
         '/dashboard': 'Painel de Controle 🏫',
         '/alunos': 'Gerenciamento de Alunos 👨‍🎓',
@@ -18,16 +24,10 @@ const Header = () => {
     const title = pageTitles[location.pathname] || 'Sistema de Gerenciamento Acadêmico';
 
     return (
-        <header style={{
-            backgroundColor: '#0056b3',
-            color: 'white',
-            padding: '20px 30px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-            textAlign: 'center'
-        }}>
-            <h1 style={{ margin: 0, fontSize: '1.8em', fontWeight: '500' }}>
-                {title}
-            </h1>
+        <header className={layoutStyles.header}>
+            <div className="container">
+                <h1 className={layoutStyles.headerTitle}>{title}</h1>
+            </div>
         </header>
     );
 };

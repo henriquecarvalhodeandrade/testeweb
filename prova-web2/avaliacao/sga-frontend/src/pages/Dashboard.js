@@ -1,59 +1,97 @@
-// sga-frontend/src/pages/Dashboard.js
-
+// sga-frontend/src/pages/Dashboard.js (VERSÃO SIMPLIFICADA)
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
-
-// Estilo simples para os cards no painel
-const cardStyle = {
-    backgroundColor: '#fff',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    padding: '20px',
-    textAlign: 'center',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    transition: 'transform 0.2s',
-    textDecoration: 'none',
-    color: '#333',
-    flex: '1 1 300px', // Flexível para responsividade
-    margin: '10px',
-};
+// ATUALIZAR IMPORTS:
+import dashboardStyles from '../styles/pages/Dashboard.module.css';
+import cardStyles from '../styles/components/Cards.module.css';
 
 const Dashboard = () => {
     const { nome } = useAuth();
     
-    // Lista de opções do menu. Adicionamos a URL de destino
-    const options = [
-        { title: 'Gerenciar Alunos', description: 'Cadastrar, listar e editar informações de alunos.', link: '/alunos' },
-        { title: 'Gerenciar Cursos', description: 'Cadastrar, listar e excluir cursos.', link: '/cursos' },
-        { title: 'Gerenciar Professores', description: 'Cadastrar, listar e editar informações de professores.', link: '/professores'}
+    const quickActions = [
+        { 
+            title: 'Gerenciar Alunos', 
+            description: 'Cadastrar, listar e editar informações de alunos.', 
+            link: '/alunos',
+            icon: '👨‍🎓',
+            color: '#3B82F6'
+        },
+        { 
+            title: 'Gerenciar Cursos', 
+            description: 'Cadastrar, listar e excluir cursos.', 
+            link: '/cursos',
+            icon: '📚',
+            color: '#10B981'
+        },
+        { 
+            title: 'Gerenciar Professores', 
+            description: 'Cadastrar, listar e editar informações de professores.', 
+            link: '/professores',
+            icon: '🧑‍🏫',
+            color: '#F59E0B'
+        }
     ];
 
     return (
-        <div className="container">
-            <h1>Painel de Controle, {nome || 'Usuário'}!</h1>
-            <p>Selecione a entidade que deseja gerenciar.</p>
-
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', margin: '20px 0' }}>
-                {options.map(option => (
-                    <Link 
-                        key={option.title} 
-                        to={option.link}
-                        style={{ 
-                            ...cardStyle,
-                            // A opacidade agora será 1 para Professores, pois disabled é false
-                            opacity: option.disabled ? 0.6 : 1,
-                            cursor: option.disabled ? 'not-allowed' : 'pointer'
-                        }}
-                        onClick={(e) => option.disabled && e.preventDefault()}
-                    >
-                        <h2>{option.title}</h2>
-                        <p>{option.description}</p>
-                    </Link>
-                ))}
+        <div className={dashboardStyles.dashboard}>
+            {/* Header Simples */}
+            <div className={dashboardStyles.dashboardHeader}>
+                <h1 className={dashboardStyles.dashboardTitle}>
+                    Olá, {nome || 'Usuário'}! 👋
+                </h1>
+                <p className={dashboardStyles.dashboardSubtitle}>
+                    O que você gostaria de gerenciar hoje?
+                </p>
             </div>
-            
-            <p style={{ marginTop: '30px' }}>Você está logado e tem acesso a todas as funcionalidades do Sistema de Gerenciamento Acadêmico (SGA).</p>
+
+            {/* Ações Rápidas - Foco Principal */}
+            <section className={dashboardStyles.quickActions}>
+                <div className={dashboardStyles.actionsGrid}>
+                    {quickActions.map((action) => (
+                        <Link 
+                            key={action.title}
+                            to={action.link}
+                            className={cardStyles.dashboardCard}
+                            style={{ 
+                                '--primary-color': action.color,
+                                '--primary-light': `${action.color}20`
+                            }}
+                        >
+                            <span 
+                                className={cardStyles.dashboardCardIcon}
+                                style={{ color: action.color }}
+                            >
+                                {action.icon}
+                            </span>
+                            <h3 className={cardStyles.dashboardCardTitle}>
+                                {action.title}
+                            </h3>
+                            <p className={cardStyles.dashboardCardDescription}>
+                                {action.description}
+                            </p>
+                            <div style={{ 
+                                marginTop: 'var(--spacing-sm)', 
+                                color: action.color,
+                                fontWeight: '600',
+                                fontSize: '0.875rem'
+                            }}>
+                                Acessar →
+                            </div>
+                        </Link>
+                    ))}
+                </div>
+            </section>
+
+            {/* Mensagem Simples no Rodapé */}
+            <div style={{ 
+                textAlign: 'center', 
+                marginTop: 'var(--spacing-xl)',
+                color: 'var(--gray-500)',
+                fontSize: '0.875rem'
+            }}>
+                <p>Sistema de Gerenciamento Acadêmico - Todos os sistemas operacionais</p>
+            </div>
         </div>
     );
 };
