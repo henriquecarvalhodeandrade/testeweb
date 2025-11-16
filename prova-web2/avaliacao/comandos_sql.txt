@@ -1,31 +1,37 @@
 -- Cria o banco de dados
 CREATE DATABASE IF NOT EXISTS sga_db;
 USE sga_db;
-
 -- Tabela de Usuários (para Autenticação)
 CREATE TABLE usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
-    senha VARCHAR(255) NOT NULL, -- Onde o hash bcrypt será salvo [cite: 1819]
+    senha VARCHAR(255) NOT NULL, -- Onde o hash bcrypt será salvo
     data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
 -- Tabela de Cursos (Cadastro)
 CREATE TABLE cursos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome_curso VARCHAR(150) NOT NULL UNIQUE,
     carga_horaria INT NOT NULL
 );
-
 -- Tabela de Alunos (Cadastro com Relacionamento)
 CREATE TABLE alunos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     matricula VARCHAR(20) UNIQUE NOT NULL,
-    curso_id INT, -- Chave Estrangeira [cite: 189]
+    curso_id INT, -- Chave Estrangeira
     data_nascimento DATE,
     ativo BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE SET NULL
+);
+
+-- Tabela de Professores (Cadastro com Relacionamento - Baseado em professorModel.js)
+CREATE TABLE professores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    matricula VARCHAR(20) UNIQUE NOT NULL,
+    curso_id INT, -- Chave Estrangeira
     FOREIGN KEY (curso_id) REFERENCES cursos(id) ON DELETE SET NULL
 );
 
@@ -34,14 +40,19 @@ INSERT INTO cursos (nome_curso, carga_horaria) VALUES
 ('Análise e Desenvolvimento de Sistemas', 2400),
 ('Ciência da Computação', 4000),
 ('Redes de Computadores', 2000);
-
 -- INSERÇÃO DE USUÁRIO DE TESTE
 -- O campo 'senha' deve ser o HASH gerado por bcrypt.
 -- Para o desenvolvimento, insira manualmente um hash gerado a partir de '123456' por exemplo.
 -- Em produção, o cadastro deve ser feito pela API que fará o hash.
-
 -- Exemplo de inserção de aluno (relacionamento)
 INSERT INTO alunos (nome, matricula, curso_id) VALUES 
 ('João Silva', '2023001', 1),
 ('Maria Santos', '2023002', 2),
 ('Pedro Souza', '2023003', 1);
+
+-- Exemplo de inserção de professor (relacionamento)
+-- Os IDs de curso (1, 2, 3) referem-se aos cursos inseridos acima.
+INSERT INTO professores (nome, matricula, curso_id) VALUES 
+('Prof. Ana Lima', 'P001', 1),
+('Prof. Bruno Costa', 'P002', 3),
+('Prof. Carla Dantas', 'P003', 2);
